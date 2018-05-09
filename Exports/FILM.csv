@@ -1,0 +1,5 @@
+FID,FNAME,FTYPE,DNAME,length,IS3D,GRADE
+1,film1,Action,Amazon,120,Y,90
+2,film2,Love,Gray,119,N,91
+3,film3,Suspence,Hover,121,Y,92
+4,film4,Adventure,NH3,122,N,93
