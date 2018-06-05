@@ -1,4 +1,0 @@
-digraph struct
-{
-    Film[a,b]->a;
-}
