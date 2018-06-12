@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QLineEdit" name="usrName_lineEdit">
+  <widget class="QLineEdit" name="usrname_lineEdit">
    <property name="geometry">
     <rect>
      <x>320</x>

@@ -21,7 +21,7 @@ QT_BEGIN_NAMESPACE
 class Ui_login_dialog
 {
 public:
-    QLineEdit *usrName_lineEdit;
+    QLineEdit *usrname_lineEdit;
     QLineEdit *password_lineEdit;
     QLabel *label;
     QLabel *label_2;
@@ -34,9 +34,9 @@ public:
         if (login_dialog->objectName().isEmpty())
             login_dialog->setObjectName(QStringLiteral("login_dialog"));
         login_dialog->resize(776, 435);
-        usrName_lineEdit = new QLineEdit(login_dialog);
-        usrName_lineEdit->setObjectName(QStringLiteral("usrName_lineEdit"));
-        usrName_lineEdit->setGeometry(QRect(320, 110, 211, 27));
+        usrname_lineEdit = new QLineEdit(login_dialog);
+        usrname_lineEdit->setObjectName(QStringLiteral("usrname_lineEdit"));
+        usrname_lineEdit->setGeometry(QRect(320, 110, 211, 27));
         password_lineEdit = new QLineEdit(login_dialog);
         password_lineEdit->setObjectName(QStringLiteral("password_lineEdit"));
         password_lineEdit->setGeometry(QRect(320, 160, 211, 27));

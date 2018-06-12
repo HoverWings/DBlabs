@@ -12,8 +12,11 @@ Qt::ItemFlags MySqlQueryModel::flags(
         const QModelIndex &index) const //返回表格是否可更改的标志
 {
     Qt::ItemFlags flags = QSqlQueryModel::flags(index);
-    if (index.column()!=0) // value can be changed except first
-        flags |= Qt::ItemIsEditable;
+    if(opView==0)
+    {
+        if (index.column()!=0) // value can be changed except first
+            flags |= Qt::ItemIsEditable;
+    }
     return flags;
 }
 // add data
@@ -27,25 +30,28 @@ bool MySqlQueryModel::addData()
 bool MySqlQueryModel::setData(const QModelIndex &index, const QVariant &value, int /* role */)
 {
     set_op();
-    switch(opTable)
-    {
-        case (1):
-        {
-            qDebug()<<"FIGHTinfo changed";
-            if (index.column() < 1 || index.column() > 8)
-                return false;
-            QModelIndex primaryKeyIndex = QSqlQueryModel::index(index.row(), 0);
-            int id = data(primaryKeyIndex).toInt(); //获取id号
-            qDebug()<<id;
-            QSqlQuery query;
-            query.prepare("update "+opName+" SET "+opTitle[opCol]+" = :value WHERE FID =:FID");
-            query.bindValue(":opCol", opTitle[opCol]);
-            query.bindValue(":value", value);
-            query.bindValue(":FID", id);
-            bool isOk = query.exec();
-            qDebug() <<isOk;
-        }
-    }
+    QModelIndex temp=index;
+    set_opIndex(temp);
+
+    qDebug()<<"FIGHTinfo changed";
+    if (index.column() < 1 || index.column() > opTitle.size())
+        return false;
+//            QModelIndex primaryKeyIndex = QSqlQueryModel::index(index.row(), 0);
+//            int id = data(primaryKeyIndex).toInt(); //获取id号
+//            qDebug()<<id;
+//            QSqlQuery query;
+//            query.prepare("update "+opName+" SET "+opTitle[opCol]+" = :value WHERE "+opPRI+"= :pri");
+//            query.bindValue(":FID", id);
+    QSqlQuery query;
+    QModelIndex data_index = this->index(index.row(),opPRI_col);
+    QVariant data = this->data(data_index);
+    qDebug()<<data;
+    query.prepare("update "+opName+" SET "+opTitle[opCol]+" = :value WHERE "+opPRI+"=:pri");
+    query.bindValue(":pri", data);
+    query.bindValue(":value",value);
+    bool isOk = query.exec();
+    qDebug() <<isOk;
+
     refresh();
     return true;
 }
@@ -134,11 +140,11 @@ QVariant MySqlQueryModel::data(const QModelIndex &index, int role) const
 }
 
 
-
+// set op properity
 bool MySqlQueryModel::set_op()
 {
     set_opName();
-    set_opTitle();
+    qDebug()<<set_opTitle();
     return true;
 }
 
@@ -150,18 +156,15 @@ bool MySqlQueryModel::set_opIndex(QModelIndex &index)
     return true;
 }
 
-
 bool MySqlQueryModel::set_opName()
 {
     switch(opTable)
     {
-        case (1):opName="FLIGHTinfo";
+        case (0):opName="FLIGHTinfo";break;
+        case (1):opName="ORDERinfo";break;
     }
     return true;
 }
-
-
-
 
 
 

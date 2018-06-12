@@ -6,6 +6,9 @@ login_dialog::login_dialog(QWidget *parent) :
     ui(new Ui::login_dialog)
 {
     ui->setupUi(this);
+    ui->usrname_lineEdit->setText("1");
+    ui->password_lineEdit->setText("1");
+    ui->login_pushButton->setFocus();
 }
 
 login_dialog::~login_dialog()
@@ -15,7 +18,7 @@ login_dialog::~login_dialog()
 
 void login_dialog::on_login_pushButton_clicked()
 {
-    QString username=ui->usrName_lineEdit->text();
+    QString username=ui->usrname_lineEdit->text();
     QString password=ui->password_lineEdit->text();
     QSqlQuery query;
     query.exec("select DBCourseDesign;");
@@ -33,6 +36,13 @@ void login_dialog::on_login_pushButton_clicked()
         return;
     }
     MainWindow* w=new MainWindow;
+    w->UID=query.value(0).toInt();
+    w->db=this->db;
     this->close();
     w->show();
+}
+
+void login_dialog::on_password_lineEdit_editingFinished()
+{
+    ui->login_pushButton->setFocus();
 }

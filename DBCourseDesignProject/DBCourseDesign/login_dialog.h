@@ -9,8 +9,9 @@
 #include"mainwindow.h"
 #include"string"
 
-namespace Ui {
-class login_dialog;
+namespace Ui
+{
+    class login_dialog;
 }
 
 class login_dialog : public QDialog
@@ -19,13 +20,17 @@ class login_dialog : public QDialog
 
 public:
     explicit login_dialog(QWidget *parent = 0);
+    QSqlDatabase* db;
     ~login_dialog();
 
 private slots:
     void on_login_pushButton_clicked();
 
+    void on_password_lineEdit_editingFinished();
+
 private:
     Ui::login_dialog *ui;
+
 };
 
 #endif // LOGIN_DIALOG_H

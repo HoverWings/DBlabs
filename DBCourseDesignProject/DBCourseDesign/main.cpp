@@ -26,8 +26,11 @@ int main(int argc, char *argv[])
 //    bool isOk = query.exec();
 //    qDebug() <<"delete"<<isOk;
 
+//    QString str="asd";
 
+//    int a=str.toInt();
     login_dialog l;
+    l.db=&db;
     l.show();
 
     return a.exec();

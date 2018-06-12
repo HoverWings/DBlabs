@@ -17,6 +17,7 @@ class MySqlQueryModel : public QSqlQueryModel
 public:
 
     //public var
+    int opView;
     int  opTable;
     QString opName;
     QString opPRI;
@@ -24,6 +25,7 @@ public:
     QVector<QString> opTitle;   //table title
     QVector<QString> addVec;    //the vec
     class MainWindow* mw;
+    QTableView* pOpView;
 
     // public function
     MySqlQueryModel();
@@ -47,6 +49,7 @@ private:
     int opCol;
 
     //private funciton
+
 
 
 
