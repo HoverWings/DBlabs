@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     myModel->mw=this;
     //set table vie selection
     ui->tableView_2->setSelectionBehavior(QAbstractItemView::SelectRows);
-
+    ui->tableView_3->setSelectionBehavior(QAbstractItemView::SelectRows);
 
 }
 
@@ -113,22 +113,6 @@ void MainWindow::on_queryButton_clicked()
     return;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     myModel->clear();
@@ -163,6 +147,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 
 void MainWindow::setTab2()
 {
+    //set title
     myModel->setQuery("select * from "+myModel->opName);
     for(int i=0;i<myModel->opTitle.size();i++)
     {
@@ -206,58 +191,55 @@ void MainWindow::setFlight_Combox()
 
 
 
-
-
-
-
 void MainWindow::on_postButton_clicked()
 {
     QString opName="ORDERinfo";
+    // process choose seat;
+    chooseSeat_Dialog* chooseSeatD=new chooseSeat_Dialog(this,0);
+    //chooseSeatD->FID=0;
+    //chooseSeatD->queryFSTATUS(0);
+    chooseSeatD->exec(); // to get the seat id
 
-//    ui->tableView_2->
-    ui->tableView_2->cursor();
-    int row= ui->tableView_2->currentIndex().row();
-    QAbstractItemModel *model = ui->tableView_2->model ();
-    QVector<QString> chsVecs;
-    for(int i=0;i<myModel->opTitle.size();i++)
-    {
-        QModelIndex index= model->index(row,i);//选中行第一列的内容
-//        qDebug()<<index<<"row:"<<row;
-        QVariant data = model->data(index);
-        qDebug()<<data.toString();
-        chsVecs.append(data.toString());
-    }
-    int FID=chsVecs[0].toInt();
-    int UID=this->UID;
-//    QDateTime current_date_time = QDateTime::currentDateTime();
-//          QString current_time = current_date_time.toString("yyyy-MM-dd hh:mm:ss");
-    QString OTIME =QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-    qDebug()<<OTIME;
-    QString OSTATE="unfinish";
-    QSqlQuery query;
-    query.prepare("insert into "+opName+" (FID, UID, OTIME, OSTATE) VALUES(:FID,:UID,:OTIME,':OSTATE')");
 
-    query.bindValue(":FID", FID);
-    query.bindValue(":UID", UID);
-    query.bindValue(":OTIME", OTIME);
-    query.bindValue(":OSTATE", OSTATE);
-    QString str="insert into "+opName+" (FID, UID, OTIME, OSTATE) VALUES(1,1,'2018-06-12 10:02:31','unfinish')";
-//    query.prepare(str);
-    bool isOk = query.exec();
-    if(isOk)
-    {
-        qDebug()<<"插入成功";
-    }
-    else
-    {
-        printSQLError();
-        qDebug()<<"插入失败";
-        return;
-    }
+
+//    int row= myModel->pOpView->currentIndex().row();
+//    QAbstractItemModel *model =myModel->pOpView->model ();
+//    QVector<QString> chsVecs;
+//    for(int i=0;i<myModel->opTitle.size();i++)
+//    {
+//        QModelIndex index= model->index(row,i);//选中行第一列的内容
+//        QVariant data = model->data(index);
+//        qDebug()<<data.toString();
+//        chsVecs.append(data.toString());
+//    }
+//    int FID=chsVecs[0].toInt();
+//    int UID=this->UID;
+////  QDateTime current_date_time = QDateTime::currentDateTime();
+////  QString current_time = current_date_time.toString("yyyy-MM-dd hh:mm:ss");
+//    QString OTIME =QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+//    qDebug()<<OTIME;
+//    QString OSTATE="unfinish";
+//    QSqlQuery query;
+//    query.prepare("insert into "+opName+" (FID, UID, OTIME, OSTATE) VALUES(:FID,:UID,:OTIME,':OSTATE')");
+//    query.bindValue(":FID", FID);
+//    query.bindValue(":UID", UID);
+//    query.bindValue(":OTIME", OTIME);
+//    query.bindValue(":OSTATE", OSTATE);
+//    bool isOk = query.exec();
+//    if(isOk)
+//    {
+//        setTab2();
+
+//        qDebug()<<"预订成功";
+//    }
+//    else
+//    {
+//        printSQLError();
+//        qDebug()<<"预订失败";
+//        return;
+//    }
 
 }
-
-
 
 
 
@@ -289,6 +271,60 @@ void MainWindow::printSQLError()
         }
     }
 }
+
+
+void MainWindow::on_Unsubscribe_pushButton_clicked()
+{
+    QString orderstr="";
+    int row= myModel->pOpView->currentIndex().row();
+    QAbstractItemModel *model =myModel->pOpView->model ();
+    QVector<QString> chsVecs;
+    for(int i=0;i<myModel->opTitle.size();i++)
+    {
+        QModelIndex index= model->index(row,i);//选中行第一列的内容
+        QVariant data = model->data(index);
+        qDebug()<<data.toString();
+        chsVecs.append(data.toString());
+
+    }
+    int OID=chsVecs[0].toInt();
+    qDebug()<<chsVecs;
+    QMessageBox::StandardButton rb = QMessageBox::question(NULL, "订单退订！", "你确定要退订如下订单?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    if(rb == QMessageBox::Yes)
+    {
+        QSqlQuery query;
+        qDebug()<<"opName:"<<myModel->opName;
+        query.prepare("update "+myModel->opName+" set OSTATE = :OSTATE where OID = :OID ");
+//        query.prepare("UPDATE Person SET FirstName = 'Fred' WHERE LastName = 'Wilson' ");
+        query.bindValue(":OSTATE","Unsubscribe");
+        query.bindValue(":OID",OID);
+        bool isOk = query.exec();
+        // process the FSTATUS
+        if(isOk)
+        {
+            QMessageBox::about(NULL, "Attention", "退订成功");
+            qDebug()<<"退订成功";
+            return;
+        }
+        else
+        {
+            QMessageBox::about(NULL, "Attention", "退订失败");
+            qDebug()<<"删除失败";
+            return;
+        }
+        // do unsubscribe
+//        QMessageBox::aboutQt(NULL, "About Qt");
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 

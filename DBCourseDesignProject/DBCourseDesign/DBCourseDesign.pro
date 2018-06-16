@@ -27,13 +27,21 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     login_dialog.cpp \
-    mysqlquerymodel.cpp
+    mysqlquerymodel.cpp \
+    chooseseat_dialog.cpp \
+
 
 HEADERS += \
         mainwindow.h \
     login_dialog.h \
-    mysqlquerymodel.h
+    mysqlquerymodel.h \
+    chooseseat_dialog.h \
+
 
 FORMS += \
         mainwindow.ui \
-    login_dialog.ui
+    login_dialog.ui \
+    chooseseat_dialog.ui
+
+DISTFILES += \
+    FSTATUSimage/B747-89L.jpg

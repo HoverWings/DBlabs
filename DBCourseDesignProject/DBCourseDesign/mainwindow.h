@@ -3,14 +3,16 @@
 
 #include <QMainWindow>
 #include <QSqlDatabase>
+#include <QSqlQueryModel>
 #include <QMessageBox>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
-#include <QSqlQueryModel>
+
 #include <QComboBox>
 #include <QTableWidget>
 #include "mysqlquerymodel.h"
+#include "chooseseat_dialog.h"
 namespace Ui
 {
     class MainWindow;
@@ -37,6 +39,8 @@ private slots:
     void on_queryButton_clicked();
     void on_tabWidget_currentChanged(int index);
     void on_postButton_clicked();
+
+    void on_Unsubscribe_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

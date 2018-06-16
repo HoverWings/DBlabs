@@ -77,6 +77,8 @@ public:
     QLineEdit *FTO_lineEdit;
     QWidget *tab_3;
     QTableView *tableView_3;
+    QPushButton *checkin_pushButton;
+    QPushButton *Unsubscribe_pushButton;
     QWidget *tab_4;
     QMenuBar *menuBar;
     QMenu *menu_F;
@@ -104,7 +106,7 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(30, 10, 1021, 481));
+        tabWidget->setGeometry(QRect(10, 0, 1401, 601));
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
         tableWidget = new QTableWidget(tab);
@@ -124,7 +126,7 @@ public:
         tab_2->setObjectName(QStringLiteral("tab_2"));
         tableView_2 = new QTableView(tab_2);
         tableView_2->setObjectName(QStringLiteral("tableView_2"));
-        tableView_2->setGeometry(QRect(370, 40, 581, 301));
+        tableView_2->setGeometry(QRect(360, 40, 581, 301));
         layoutWidget = new QWidget(tab_2);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
         layoutWidget->setGeometry(QRect(30, 150, 201, 30));
@@ -176,6 +178,7 @@ public:
 
         FLISHT_comboBox = new QComboBox(layoutWidget_3);
         FLISHT_comboBox->setObjectName(QStringLiteral("FLISHT_comboBox"));
+        FLISHT_comboBox->setEditable(true);
 
         horizontalLayout_5->addWidget(FLISHT_comboBox);
 
@@ -206,7 +209,7 @@ public:
         queryButton->setGeometry(QRect(40, 390, 88, 27));
         postButton = new QPushButton(tab_2);
         postButton->setObjectName(QStringLiteral("postButton"));
-        postButton->setGeometry(QRect(700, 380, 88, 27));
+        postButton->setGeometry(QRect(640, 380, 88, 27));
         layoutWidget1 = new QWidget(tab_2);
         layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
         layoutWidget1->setGeometry(QRect(30, 50, 201, 29));
@@ -248,7 +251,13 @@ public:
         tab_3->setObjectName(QStringLiteral("tab_3"));
         tableView_3 = new QTableView(tab_3);
         tableView_3->setObjectName(QStringLiteral("tableView_3"));
-        tableView_3->setGeometry(QRect(370, 50, 471, 291));
+        tableView_3->setGeometry(QRect(80, 10, 861, 401));
+        checkin_pushButton = new QPushButton(tab_3);
+        checkin_pushButton->setObjectName(QStringLiteral("checkin_pushButton"));
+        checkin_pushButton->setGeometry(QRect(530, 450, 88, 27));
+        Unsubscribe_pushButton = new QPushButton(tab_3);
+        Unsubscribe_pushButton->setObjectName(QStringLiteral("Unsubscribe_pushButton"));
+        Unsubscribe_pushButton->setGeometry(QRect(180, 450, 88, 27));
         tabWidget->addTab(tab_3, QString());
         tab_4 = new QWidget();
         tab_4->setObjectName(QStringLiteral("tab_4"));
@@ -283,7 +292,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -315,6 +324,8 @@ public:
         label_2->setText(QApplication::translate("MainWindow", "\345\210\260\350\276\276\345\234\260", nullptr));
         FTO_lineEdit->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Tab 2", nullptr));
+        checkin_pushButton->setText(QApplication::translate("MainWindow", "check-in", nullptr));
+        Unsubscribe_pushButton->setText(QApplication::translate("MainWindow", "Unsubscribe", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Page", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("MainWindow", "Page", nullptr));
         menu_F->setTitle(QApplication::translate("MainWindow", "\350\210\252\347\217\255\344\277\241\346\201\257(&F)", nullptr));

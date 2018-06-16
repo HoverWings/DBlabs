@@ -8,7 +8,8 @@ MySqlQueryModel::MySqlQueryModel(QObject *parent) :
 
 }
 
-Qt::ItemFlags MySqlQueryModel::flags(
+Qt::ItemFlags MySqlQueryModel::flags
+(
         const QModelIndex &index) const //返回表格是否可更改的标志
 {
     Qt::ItemFlags flags = QSqlQueryModel::flags(index);
@@ -79,7 +80,6 @@ bool MySqlQueryModel::deleteData(QModelIndex &index)
 bool MySqlQueryModel::set_opTitle()
 {
     QSqlQuery query;
-    //qDebug()<<opName;
     query.prepare("SHOW COLUMNS FROM "+opName);
     bool isOk = query.exec();
     //qDebug() <<"title"<<isOk;
@@ -115,7 +115,7 @@ void MySqlQueryModel::refresh() //更新显示
     //qDebug() << "refresh";
     switch (this->opTable)
     {
-    case 1:
+    case 0:
         mw->on_action_F_triggered();
         //qDebug() << "refresh";
         break;
@@ -162,6 +162,7 @@ bool MySqlQueryModel::set_opName()
     {
         case (0):opName="FLIGHTinfo";break;
         case (1):opName="ORDERinfo";break;
+        case (2):opName="FSTATUSinfo";break;
     }
     return true;
 }

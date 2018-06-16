@@ -53,17 +53,22 @@ OBJECTS_DIR   = ./
 SOURCES       = ../DBCourseDesign/main.cpp \
 		../DBCourseDesign/mainwindow.cpp \
 		../DBCourseDesign/login_dialog.cpp \
-		../DBCourseDesign/mysqlquerymodel.cpp moc_mainwindow.cpp \
+		../DBCourseDesign/mysqlquerymodel.cpp \
+		../DBCourseDesign/chooseseat_dialog.cpp moc_mainwindow.cpp \
 		moc_login_dialog.cpp \
-		moc_mysqlquerymodel.cpp
+		moc_mysqlquerymodel.cpp \
+		moc_chooseseat_dialog.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		login_dialog.o \
 		mysqlquerymodel.o \
+		chooseseat_dialog.o \
 		moc_mainwindow.o \
 		moc_login_dialog.o \
-		moc_mysqlquerymodel.o
-DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
+		moc_mysqlquerymodel.o \
+		moc_chooseseat_dialog.o
+DIST          = ../DBCourseDesign/FSTATUSimage/B747-89L.jpg \
+		/usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/common/unix.conf \
 		/usr/lib/qt/mkspecs/common/linux.conf \
 		/usr/lib/qt/mkspecs/common/sanitize.conf \
@@ -278,10 +283,12 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/features/lex.prf \
 		../DBCourseDesign/DBCourseDesign.pro ../DBCourseDesign/mainwindow.h \
 		../DBCourseDesign/login_dialog.h \
-		../DBCourseDesign/mysqlquerymodel.h ../DBCourseDesign/main.cpp \
+		../DBCourseDesign/mysqlquerymodel.h \
+		../DBCourseDesign/chooseseat_dialog.h ../DBCourseDesign/main.cpp \
 		../DBCourseDesign/mainwindow.cpp \
 		../DBCourseDesign/login_dialog.cpp \
-		../DBCourseDesign/mysqlquerymodel.cpp
+		../DBCourseDesign/mysqlquerymodel.cpp \
+		../DBCourseDesign/chooseseat_dialog.cpp
 QMAKE_TARGET  = DBCourseDesign
 DESTDIR       = 
 TARGET        = DBCourseDesign
@@ -290,7 +297,7 @@ TARGET        = DBCourseDesign
 first: all
 ####### Build rules
 
-$(TARGET): ui_mainwindow.h ui_login_dialog.h $(OBJECTS)  
+$(TARGET): ui_mainwindow.h ui_login_dialog.h ui_chooseseat_dialog.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ../DBCourseDesign/DBCourseDesign.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspecs/features/spec_pre.prf \
@@ -745,9 +752,9 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../DBCourseDesign/mainwindow.h ../DBCourseDesign/login_dialog.h ../DBCourseDesign/mysqlquerymodel.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../DBCourseDesign/main.cpp ../DBCourseDesign/mainwindow.cpp ../DBCourseDesign/login_dialog.cpp ../DBCourseDesign/mysqlquerymodel.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../DBCourseDesign/mainwindow.ui ../DBCourseDesign/login_dialog.ui $(DISTDIR)/
+	$(COPY_FILE) --parents ../DBCourseDesign/mainwindow.h ../DBCourseDesign/login_dialog.h ../DBCourseDesign/mysqlquerymodel.h ../DBCourseDesign/chooseseat_dialog.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../DBCourseDesign/main.cpp ../DBCourseDesign/mainwindow.cpp ../DBCourseDesign/login_dialog.cpp ../DBCourseDesign/mysqlquerymodel.cpp ../DBCourseDesign/chooseseat_dialog.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../DBCourseDesign/mainwindow.ui ../DBCourseDesign/login_dialog.ui ../DBCourseDesign/chooseseat_dialog.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -779,11 +786,12 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/qt/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -Wall -W -dM -E -o moc_predefs.h /usr/lib/qt/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_login_dialog.cpp moc_mysqlquerymodel.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_login_dialog.cpp moc_mysqlquerymodel.cpp moc_chooseseat_dialog.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_login_dialog.cpp moc_mysqlquerymodel.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_login_dialog.cpp moc_mysqlquerymodel.cpp moc_chooseseat_dialog.cpp
 moc_mainwindow.cpp: ../DBCourseDesign/mysqlquerymodel.h \
 		../DBCourseDesign/mainwindow.h \
+		../DBCourseDesign/chooseseat_dialog.h \
 		../DBCourseDesign/mainwindow.h \
 		moc_predefs.h \
 		/usr/bin/moc
@@ -791,6 +799,7 @@ moc_mainwindow.cpp: ../DBCourseDesign/mysqlquerymodel.h \
 
 moc_login_dialog.cpp: ../DBCourseDesign/mainwindow.h \
 		../DBCourseDesign/mysqlquerymodel.h \
+		../DBCourseDesign/chooseseat_dialog.h \
 		../DBCourseDesign/login_dialog.h \
 		moc_predefs.h \
 		/usr/bin/moc
@@ -798,18 +807,27 @@ moc_login_dialog.cpp: ../DBCourseDesign/mainwindow.h \
 
 moc_mysqlquerymodel.cpp: ../DBCourseDesign/mainwindow.h \
 		../DBCourseDesign/mysqlquerymodel.h \
+		../DBCourseDesign/chooseseat_dialog.h \
 		../DBCourseDesign/mysqlquerymodel.h \
 		moc_predefs.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/wings/OneDrive/Labs/DBlabs/DBCourseDesignProject/DBCourseDesign -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtSql -I/usr/include/qt/QtCore -I. -I/usr/include/c++/8.1.0 -I/usr/include/c++/8.1.0/x86_64-pc-linux-gnu -I/usr/include/c++/8.1.0/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.0/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.0/include-fixed -I/usr/include ../DBCourseDesign/mysqlquerymodel.h -o moc_mysqlquerymodel.cpp
 
+moc_chooseseat_dialog.cpp: ../DBCourseDesign/mysqlquerymodel.h \
+		../DBCourseDesign/mainwindow.h \
+		../DBCourseDesign/chooseseat_dialog.h \
+		../DBCourseDesign/chooseseat_dialog.h \
+		moc_predefs.h \
+		/usr/bin/moc
+	/usr/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/wings/OneDrive/Labs/DBlabs/DBCourseDesignProject/DBCourseDesign -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtSql -I/usr/include/qt/QtCore -I. -I/usr/include/c++/8.1.0 -I/usr/include/c++/8.1.0/x86_64-pc-linux-gnu -I/usr/include/c++/8.1.0/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.0/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/8.1.0/include-fixed -I/usr/include ../DBCourseDesign/chooseseat_dialog.h -o moc_chooseseat_dialog.cpp
+
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h ui_login_dialog.h
+compiler_uic_make_all: ui_mainwindow.h ui_login_dialog.h ui_chooseseat_dialog.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h ui_login_dialog.h
+	-$(DEL_FILE) ui_mainwindow.h ui_login_dialog.h ui_chooseseat_dialog.h
 ui_mainwindow.h: ../DBCourseDesign/mainwindow.ui \
 		/usr/bin/uic
 	/usr/bin/uic ../DBCourseDesign/mainwindow.ui -o ui_mainwindow.h
@@ -817,6 +835,10 @@ ui_mainwindow.h: ../DBCourseDesign/mainwindow.ui \
 ui_login_dialog.h: ../DBCourseDesign/login_dialog.ui \
 		/usr/bin/uic
 	/usr/bin/uic ../DBCourseDesign/login_dialog.ui -o ui_login_dialog.h
+
+ui_chooseseat_dialog.h: ../DBCourseDesign/chooseseat_dialog.ui \
+		/usr/bin/uic
+	/usr/bin/uic ../DBCourseDesign/chooseseat_dialog.ui -o ui_chooseseat_dialog.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -830,23 +852,33 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 
 main.o: ../DBCourseDesign/main.cpp ../DBCourseDesign/mainwindow.h \
 		../DBCourseDesign/mysqlquerymodel.h \
+		../DBCourseDesign/chooseseat_dialog.h \
 		../DBCourseDesign/login_dialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../DBCourseDesign/main.cpp
 
 mainwindow.o: ../DBCourseDesign/mainwindow.cpp ../DBCourseDesign/mainwindow.h \
 		../DBCourseDesign/mysqlquerymodel.h \
+		../DBCourseDesign/chooseseat_dialog.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../DBCourseDesign/mainwindow.cpp
 
 login_dialog.o: ../DBCourseDesign/login_dialog.cpp ../DBCourseDesign/login_dialog.h \
 		../DBCourseDesign/mainwindow.h \
 		../DBCourseDesign/mysqlquerymodel.h \
+		../DBCourseDesign/chooseseat_dialog.h \
 		ui_login_dialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o login_dialog.o ../DBCourseDesign/login_dialog.cpp
 
 mysqlquerymodel.o: ../DBCourseDesign/mysqlquerymodel.cpp ../DBCourseDesign/mysqlquerymodel.h \
-		../DBCourseDesign/mainwindow.h
+		../DBCourseDesign/mainwindow.h \
+		../DBCourseDesign/chooseseat_dialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mysqlquerymodel.o ../DBCourseDesign/mysqlquerymodel.cpp
+
+chooseseat_dialog.o: ../DBCourseDesign/chooseseat_dialog.cpp ../DBCourseDesign/chooseseat_dialog.h \
+		../DBCourseDesign/mysqlquerymodel.h \
+		../DBCourseDesign/mainwindow.h \
+		ui_chooseseat_dialog.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o chooseseat_dialog.o ../DBCourseDesign/chooseseat_dialog.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
@@ -856,6 +888,9 @@ moc_login_dialog.o: moc_login_dialog.cpp
 
 moc_mysqlquerymodel.o: moc_mysqlquerymodel.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mysqlquerymodel.o moc_mysqlquerymodel.cpp
+
+moc_chooseseat_dialog.o: moc_chooseseat_dialog.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_chooseseat_dialog.o moc_chooseseat_dialog.cpp
 
 ####### Install
 
