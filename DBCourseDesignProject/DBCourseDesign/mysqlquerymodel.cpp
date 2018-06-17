@@ -19,6 +19,7 @@ Qt::ItemFlags MySqlQueryModel::flags
             flags |= Qt::ItemIsEditable;
     }
     return flags;
+
 }
 // add data
 bool MySqlQueryModel::addData()
@@ -149,6 +150,8 @@ bool MySqlQueryModel::set_op()
 }
 
 
+
+
 bool MySqlQueryModel::set_opIndex(QModelIndex &index)
 {
     opRow=index.row();
@@ -163,9 +166,29 @@ bool MySqlQueryModel::set_opName()
         case (0):opName="FLIGHTinfo";break;
         case (1):opName="ORDERinfo";break;
         case (2):opName="FSTATUSinfo";break;
+        //case (3):opName=""
     }
     return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

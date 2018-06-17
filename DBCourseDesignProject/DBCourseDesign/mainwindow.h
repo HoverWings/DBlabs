@@ -8,7 +8,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
-
+#include <QDate>
+#include <QTime>
 #include <QComboBox>
 #include <QTableWidget>
 #include "mysqlquerymodel.h"
@@ -24,10 +25,33 @@ class MainWindow : public QMainWindow
 
 public:
     int UID;
+    QString userName;
+
+    QString seatName;
+
     QSqlDatabase* db;
     explicit MainWindow(QWidget *parent = 0);
     class MySqlQueryModel* myModel=NULL;
+    QTableView * pOpView=NULL;
     ~MainWindow();
+
+private:
+    Ui::MainWindow *ui;
+
+    int selRow;
+    int selCol;
+    bool isDataChanged=false;
+    bool isTimeChanged=false;
+    void setFlight_Combox();
+    void setTab();
+    void setTab2();
+
+
+    //debug funciton
+    void printSQLError();
+
+
+
 public slots:
     void on_action_F_triggered();
 
@@ -39,20 +63,13 @@ private slots:
     void on_queryButton_clicked();
     void on_tabWidget_currentChanged(int index);
     void on_postButton_clicked();
-
     void on_Unsubscribe_pushButton_clicked();
 
-private:
-    Ui::MainWindow *ui;
-    int selRow;
-    int selCol;
 
-    void setFlight_Combox();
-    void setTab2();
+    void dateChanged();
+    void timeChanged();
 
 
-    //debug funciton
-    void printSQLError();
 };
 
 

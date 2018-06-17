@@ -1,7 +1,7 @@
 #include "chooseseat_dialog.h"
 #include "ui_chooseseat_dialog.h"
 
-chooseSeat_Dialog::chooseSeat_Dialog(QWidget *parent,int FID) :
+chooseSeat_Dialog::chooseSeat_Dialog(class MainWindow *parent,int FID) :
     QDialog(parent),
     ui(new Ui::chooseSeat_Dialog)
 {
@@ -19,37 +19,43 @@ chooseSeat_Dialog::chooseSeat_Dialog(QWidget *parent,int FID) :
                   "border-style: outset;"
                   "}");
     setButtonGroup(FID);
-    setImage(FID);
+    setImage();
     queryFSTATUS(FID);
+    mw=parent;
+
+    //setAttribute(Qt::WA_DeleteOnClose);
 }
 
-void chooseSeat_Dialog::setImage(int FID)
+
+
+
+void chooseSeat_Dialog::setImage()
 {
-    // set plane image
-//    QString fileName = QFileDialog::getOpenFileName(
-//                    this, "open image file",
-//                    ".",
-//                    "Image files (*.bmp *.jpg *.pbm *.pgm *.png *.ppm *.xbm *.xpm);;All files (*.*)");
-    QString fileName="FSTATUSimage/B747-89L";
-    QImage *image;
-    if(fileName != "")
+    QString str = "select * from FMODELinfo where FMODEL= (select FMODEL FROM FLIGHTinfo where FID= "+QString::number(FID,10)+" )";
+    QSqlQuery query;
+    query.exec(str);
+    QPixmap photo;
+    if(query.next())
     {
-        if(image->load(fileName))
-        {
-            QGraphicsScene *scene = new QGraphicsScene;
-            scene->addPixmap(QPixmap::fromImage(*image));
-            ui->graphicsView->setScene(scene);
-            ui->graphicsView->resize(image->width() + 10, image->height() + 10);
-            ui->graphicsView->show();
-        }
+        QLabel *PicLabel = new QLabel();
+        photo.loadFromData(query.value(1).toByteArray(), "JPG"); //从数据库中读出图片为二进制数据，图片格式为JPG，然后显示到QLabel里
+        PicLabel->setPixmap(photo);
+        PicLabel->setScaledContents(true);
     }
+    QGraphicsScene *scene = new QGraphicsScene;
+    scene->addPixmap(photo);
+    ui->graphicsView->setScene(scene);
+    ui->graphicsView->resize(photo.width() + 10, photo.height() + 10);
+    ui->graphicsView->show();
 }
 
 
 void chooseSeat_Dialog::setButtonGroup(int FID)
 {
     // set button group
-    QGridLayout *layout = ui->gridLayout;
+    int totalNum=0;
+    int usableNum=0;
+    QGridLayout *layout = ui->gridLayout_0;
     QSqlQuery query;
     QString opName="FLIGHTinfo";
     QString showItem="FLIGHT";
@@ -68,8 +74,9 @@ void chooseSeat_Dialog::setButtonGroup(int FID)
     int col=-1;
     int len=0;
     int usable=-1;
-    while (query.next())
+    while (query.next()) // when .next() then go to the next
     {
+        totalNum+=1;
         //qDebug()<<query.value(2).toString();
         usable=query.value(2).toString().toInt();
         len=query.value(1).toString().length();
@@ -90,6 +97,7 @@ void chooseSeat_Dialog::setButtonGroup(int FID)
         layout->addWidget(pushbutton,row,col,1,1);
         if(usable)
         {
+            usableNum+=1;
             pushbutton->setCheckable(true);
             pushbutton->setAutoExclusive(true);
         }
@@ -98,17 +106,20 @@ void chooseSeat_Dialog::setButtonGroup(int FID)
             pushbutton->setCheckable(false);
             pushbutton->setStyleSheet("background-color: rgb(170, 0, 255);"); //set the background color
         }
-
     }
+    qDebug()<<"totalNum"<<totalNum;
+    qDebug()<<"usableNum"<<usableNum;
+    ui->label_totalSeatNum->setText(QString::number(totalNum,10));
+    ui->label_usableSeatNum->setText(QString::number(usableNum,10));
+    float fnum=((float)totalNum-usableNum)/totalNum*100;
+    ui->label_fullRate->setText(QString("%1").arg(fnum)+"%");
 }
-
 
 
 chooseSeat_Dialog::~chooseSeat_Dialog()
 {
     delete ui;
 }
-
 
 //query the choosable seat
 void chooseSeat_Dialog::queryFSTATUS(int FID)
@@ -175,7 +186,7 @@ void chooseSeat_Dialog::on_chooseSteat_pushButton_clicked()
     {
         QModelIndex selIndex=ui->FSTATUS_tableView->currentIndex();
         int selRow=selIndex.row();
-        int selCol=selIndex.column();
+        //int selCol=selIndex.column();
         qDebug()<<selRow;
         QModelIndex index= StatusModel->index(selRow,1);
         QVariant data = StatusModel->data(index);
@@ -185,9 +196,10 @@ void chooseSeat_Dialog::on_chooseSteat_pushButton_clicked()
     QMessageBox::StandardButton rb = QMessageBox::question(NULL, "请确认座位", "您选择的座位为:"+seatName, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     if(rb == QMessageBox::Yes)
     {
+        mw->seatName=seatName;
         this->close();
     }
-    if(rb == QMessageBox::Yes)
+    if(rb == QMessageBox::No)
     {
         return;
     }

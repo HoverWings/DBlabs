@@ -5,15 +5,18 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
     //set model pointer
     MySqlQueryModel* myModel = new MySqlQueryModel(this);
     this->myModel=myModel;
     myModel->mw=this;
     //set table vie selection
+    ui->tableView_1->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableView_2->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->tableView_3->setSelectionBehavior(QAbstractItemView::SelectRows);
-
+    ui->dateEdit->setDisplayFormat("yyyy/MM/dd");
+    ui->dateEdit->setCalendarPopup(true);
+    ui->timeEdit->setDisplayFormat("HH:mm");
 }
 
 MainWindow::~MainWindow()
@@ -41,7 +44,7 @@ void MainWindow::on_action_F_triggered() // print FLIGHTinfor 1 to view
     {
         myModel->setHeaderData(i, Qt::Horizontal, myModel->opTitle[i]);
     }
-    ui->tableView->setModel(myModel);
+    pOpView->setModel(myModel);
     return;
 }
 
@@ -50,7 +53,7 @@ void MainWindow::on_deleteButton_clicked()
     qDebug()<<"delete!!!!";
     //myModel->set_op();
     //myModel->set_opIndex(index);
-    QModelIndex selIndex=ui->tableView->currentIndex();
+    QModelIndex selIndex=pOpView->currentIndex();
     selRow=selIndex.row();
     selCol=selIndex.column();
     myModel->deleteData(selIndex);
@@ -73,7 +76,6 @@ void MainWindow::on_addButton_clicked()
 void MainWindow::on_queryButton_clicked()
 {
     QString str;
-//    QTableView * now=ui->tableView_2;
     str="select * from "+myModel->opName+" where ";
     if(ui->FFROM_lineEdit->text().isEmpty())
     {
@@ -104,12 +106,45 @@ void MainWindow::on_queryButton_clicked()
         str+=ui->FTO_lineEdit->text();
         str+="' ";
     }
+    if(isDataChanged)
+    {
+        QDate date = ui->dateEdit->date();
+        QString dateStr=date.toString("yyyy-MM-dd");
+        qDebug()<<dateStr;
+        str+=" and ";
+        str+="FDATE =";
+        str+=" '";
+        str+=dateStr;
+        str+="' ";
+    }
+    if(isTimeChanged) // the flight time should before the time
+    {
+        QTime time = ui->timeEdit->time();
+        QString timeStr=time.toString("HH:mm:ss");
+        qDebug()<<timeStr;
+        str+=" and ";
+        str+="FTIME <=";
+        str+=" '";
+        str+=timeStr;
+        str+="' ";
+    }
+    if(ui->FLIGHT_comboBox->currentText()!="ALL")
+    {
+        QString Flight=ui->FLIGHT_comboBox->currentText();
+        qDebug()<<"FLIGHT:"<<Flight;
+        str+=" and ";
+        str+="Flight =";
+        str+=" '";
+        str+=Flight;
+        str+="' ";
+    }
+
     myModel->setQuery(str);
     for(int i=0;i<myModel->opTitle.size();i++)
     {
         myModel->setHeaderData(i, Qt::Horizontal, myModel->opTitle[i]);
     }
-    ui->tableView_2->setModel(myModel);
+    pOpView->setModel(myModel);
     return;
 }
 
@@ -120,14 +155,17 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     {
         case 0:
         {
-            myModel->opView=0;
+            myModel->opTable=0; //FLIGHTinfo
+            myModel->opView=0;  //add and delete
+            pOpView=ui->tableView_0;
             break;
         }
         case 1:
         {
             myModel->opTable=0;
-            myModel->set_op();
             myModel->opView=1;
+            myModel->set_op();
+            pOpView=ui->tableView_1;
             setFlight_Combox();
             break;
         }
@@ -135,33 +173,85 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         {
             //order table
             myModel->opTable=1;
-            myModel->set_op();
             myModel->opView=2;
-            myModel->pOpView=ui->tableView_3;
+            myModel->set_op();
+            pOpView=ui->tableView_2;
             setTab2();
+            break;
+        }
+        case 3:
+        {
+            //bill table
+            QSqlQuery query;
+            QString str="";
+            QString viewName=userName+"_ORDER";
+            qDebug()<<viewName;
+            qDebug()<<UID;
+            str="create or replace VIEW "+ viewName +" AS select OID, FLIGHTinfo.FID , SID , FFROM, FTO, FDATE-DAY(1) as 'pick up time', FDATE, FTIME , OSTATE FROM FLIGHTinfo , ORDERinfo where FLIGHTinfo.FID=ORDERinfo.FID and OSTATE!='Unsubscribe' AND UID = "+QString::number(UID,10);
+            query.prepare(str);
+            bool isOK=query.exec();
+            if(!isOK)
+            {
+                qDebug()<<"create user-order fail!";
+                return;
+            }
+            myModel->opName=viewName;
+            myModel->set_opTitle();
+            pOpView=ui->tableView_3;
+            setTab();
             break;
         }
     }
 }
 
 
-void MainWindow::setTab2()
+void MainWindow::setTab()
 {
     //set title
+    myModel->clear();
     myModel->setQuery("select * from "+myModel->opName);
     for(int i=0;i<myModel->opTitle.size();i++)
     {
         myModel->setHeaderData(i, Qt::Horizontal, myModel->opTitle[i]);
     }
-    myModel->pOpView->setModel(myModel);
-    return;
+    pOpView->setModel(myModel);
 }
 
 
+void MainWindow::setTab2()
+{
+    myModel->clear();
+    myModel->setQuery("select * from "+myModel->opName+" where UID ="+QString::number(UID,10));
+    for(int i=0;i<myModel->opTitle.size();i++)
+    {
+        myModel->setHeaderData(i, Qt::Horizontal, myModel->opTitle[i]);
+    }
+    pOpView->setModel(myModel);
+}
+
+
+void MainWindow::dateChanged()
+{
+    isDataChanged=true;
+}
+
+void MainWindow::timeChanged()
+{
+    isTimeChanged=true;
+}
+
 void MainWindow::setFlight_Combox()
 {
+    // set time edit
+    ui->dateEdit->setDateTime(QDateTime::currentDateTime());
+    ui->timeEdit->setDateTime(QDateTime::currentDateTime());
+    isDataChanged=false;
+    isTimeChanged=false;
+    connect(ui->dateEdit,SIGNAL(dateChanged(QDate)),this,SLOT(dateChanged()));
+    connect(ui->timeEdit,SIGNAL(timeChanged(QTime)),this,SLOT(timeChanged()));
+
     // set flight combox
-    QComboBox* com=ui->FLISHT_comboBox;
+    QComboBox* com=ui->FLIGHT_comboBox;
     com->clear();
     QSqlQuery query;
     QString opName="FLIGHTinfo";
@@ -172,14 +262,12 @@ void MainWindow::setFlight_Combox()
     {
         return;
     }
-    qDebug()<<query.value(0).toString();
     while (query.next())
     {
-        qDebug()<<query.value(0).toString();
         com->addItem(query.value(0).toString());
     }
-    com->addItem("all");
-
+    com->addItem("ALL");
+    com->setCurrentIndex(-1);
 }
 
 
@@ -196,53 +284,63 @@ void MainWindow::on_postButton_clicked()
     QString opName="ORDERinfo";
     // process choose seat;
     chooseSeat_Dialog* chooseSeatD=new chooseSeat_Dialog(this,0);
-    //chooseSeatD->FID=0;
-    //chooseSeatD->queryFSTATUS(0);
     chooseSeatD->exec(); // to get the seat id
-
-
-
-//    int row= myModel->pOpView->currentIndex().row();
-//    QAbstractItemModel *model =myModel->pOpView->model ();
-//    QVector<QString> chsVecs;
-//    for(int i=0;i<myModel->opTitle.size();i++)
+//    if (res == QDialog::Accepted)
 //    {
-//        QModelIndex index= model->index(row,i);//选中行第一列的内容
-//        QVariant data = model->data(index);
-//        qDebug()<<data.toString();
-//        chsVecs.append(data.toString());
+//       QMessageBox::information(this, "INFORMATION", "You clicked OK button!");
 //    }
-//    int FID=chsVecs[0].toInt();
-//    int UID=this->UID;
-////  QDateTime current_date_time = QDateTime::currentDateTime();
-////  QString current_time = current_date_time.toString("yyyy-MM-dd hh:mm:ss");
-//    QString OTIME =QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-//    qDebug()<<OTIME;
-//    QString OSTATE="unfinish";
-//    QSqlQuery query;
-//    query.prepare("insert into "+opName+" (FID, UID, OTIME, OSTATE) VALUES(:FID,:UID,:OTIME,':OSTATE')");
-//    query.bindValue(":FID", FID);
-//    query.bindValue(":UID", UID);
-//    query.bindValue(":OTIME", OTIME);
-//    query.bindValue(":OSTATE", OSTATE);
-//    bool isOk = query.exec();
-//    if(isOk)
+//    if (res == QDialog::Rejected)
 //    {
-//        setTab2();
+//       QMessageBox::information(this, "INFORMATION", "You clicked CANCEL button!");
 
-//        qDebug()<<"预订成功";
 //    }
-//    else
-//    {
-//        printSQLError();
-//        qDebug()<<"预订失败";
-//        return;
-//    }
-
+    qDebug()<<seatName;
+    qDebug()<<myModel->opView;
+    //int row= myModel->pOpView->currentIndex().row();
+    QAbstractItemModel *model =pOpView->model();
+    QVector<QString> chsVecs;
+    int row=0;
+    for(int i=0;i<myModel->opTitle.size();i++)
+    {
+        QModelIndex index= model->index(row,i);//选中行第一列的内容
+        QVariant data = model->data(index);
+        qDebug()<<data.toString();
+        chsVecs.append(data.toString());
+    }
+    int FID=chsVecs[0].toInt();
+    int UID=this->UID;
+    QString OTIME =QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    qDebug()<<OTIME;
+    QString OSTATE="unfinish";
+    QSqlQuery query;
+    query.prepare("insert into "+opName+" (FID, UID,SID, OTIME, OSTATE) VALUES(:FID,:UID,:SID,:OTIME,':OSTATE')");
+    query.bindValue(":FID", FID);
+    query.bindValue(":UID", UID);
+    query.bindValue(":SID", seatName);
+    query.bindValue(":OTIME", OTIME);
+    query.bindValue(":OSTATE", OSTATE);
+    bool isOK1 = query.exec();
+    // decrease seat
+    query.clear();
+    opName="FSTATUSinfo";
+    query.prepare("update "+opName+" set USABLE = 0 where SID = :SID ");
+    query.bindValue(":SID",seatName);
+    bool isOk2 = query.exec();
+    if(isOK1&&isOk2)
+    {
+        setTab();
+        qDebug()<<"预订成功";
+    }
+    else
+    {
+        // roll backs
+        printSQLError();
+        qDebug()<<"预订失败";
+        return;
+    }
 }
 
-
-
+// debug function
 void MainWindow::printSQLError()
 {
 
@@ -252,22 +350,23 @@ void MainWindow::printSQLError()
     qDebug()<<error;
     if(error.isValid())//发生错误时isValid()返回true
     {
-        switch (error.type()) {
-        case QSqlError::NoError:
-            qDebug()<<"无错误";
-            break;
-        case QSqlError::ConnectionError://连接错语
-            qDebug()<<error.text();
-            break;
-        case QSqlError::StatementError://语句错语
-            qDebug()<<error.text();
-            break;
-        case QSqlError::TransactionError://事务错误
-            qDebug()<<error.text();
-            break;
-        default://未知错误
-            qDebug()<<error.text();
-            break;
+        switch (error.type())
+        {
+            case QSqlError::NoError:
+                qDebug()<<"无错误";
+                break;
+            case QSqlError::ConnectionError://连接错语
+                qDebug()<<error.text();
+                break;
+            case QSqlError::StatementError://语句错语
+                qDebug()<<error.text();
+                break;
+            case QSqlError::TransactionError://事务错误
+                qDebug()<<error.text();
+                break;
+            default://未知错误
+                qDebug()<<error.text();
+                break;
         }
     }
 }
@@ -276,8 +375,8 @@ void MainWindow::printSQLError()
 void MainWindow::on_Unsubscribe_pushButton_clicked()
 {
     QString orderstr="";
-    int row= myModel->pOpView->currentIndex().row();
-    QAbstractItemModel *model =myModel->pOpView->model ();
+    int row= pOpView->currentIndex().row();
+    QAbstractItemModel *model =pOpView->model ();
     QVector<QString> chsVecs;
     for(int i=0;i<myModel->opTitle.size();i++)
     {
@@ -285,35 +384,46 @@ void MainWindow::on_Unsubscribe_pushButton_clicked()
         QVariant data = model->data(index);
         qDebug()<<data.toString();
         chsVecs.append(data.toString());
-
     }
     int OID=chsVecs[0].toInt();
-    qDebug()<<chsVecs;
-    QMessageBox::StandardButton rb = QMessageBox::question(NULL, "订单退订！", "你确定要退订如下订单?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    QString OSTATE=chsVecs.last();
+    if(OSTATE=="Unsubscribe")
+    {
+        //QMessageBox::StandardButton rb = QMessageBox::information(NULL, "退订错误！", "订单状态错误", QMessageBox::Yes, QMessageBox::Yes);
+        QMessageBox::information(NULL, "退订错误！", "订单状态错误", QMessageBox::Yes, QMessageBox::Yes);
+    }
+    //qDebug()<<chsVecs;
+    //QMessageBox::StandardButton rb = QMessageBox::question(NULL, "订单退订！", "你确定要退订订单:"+QString::number(OID,10)+"从"+FFROM+"飞往"+FTO+" 于 "+FTIME, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    QMessageBox::StandardButton rb = QMessageBox::question(NULL, "订单退订！", "你确定要退订订单:"+QString::number(OID,10), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     if(rb == QMessageBox::Yes)
     {
+        //process ORDERinfo
         QSqlQuery query;
-        qDebug()<<"opName:"<<myModel->opName;
+        //qDebug()<<"opName:"<<myModel->opName;
         query.prepare("update "+myModel->opName+" set OSTATE = :OSTATE where OID = :OID ");
-//        query.prepare("UPDATE Person SET FirstName = 'Fred' WHERE LastName = 'Wilson' ");
         query.bindValue(":OSTATE","Unsubscribe");
         query.bindValue(":OID",OID);
-        bool isOk = query.exec();
+        bool isOk1 = query.exec();
         // process the FSTATUS
-        if(isOk)
+        query.clear();
+        QString opName="FSTATUSinfo";
+        query.prepare("update "+opName+" set USABLE =false 1 where SID = (select SID from ORDERinfo where OID= :OID) ");
+        query.bindValue(":OID",OID);
+        bool isOk2 = query.exec();
+        if(isOk1&&isOk2)
         {
             QMessageBox::about(NULL, "Attention", "退订成功");
+            setTab();
             qDebug()<<"退订成功";
             return;
         }
         else
         {
+            // roll back
             QMessageBox::about(NULL, "Attention", "退订失败");
             qDebug()<<"删除失败";
             return;
         }
-        // do unsubscribe
-//        QMessageBox::aboutQt(NULL, "About Qt");
     }
 }
 

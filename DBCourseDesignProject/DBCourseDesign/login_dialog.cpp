@@ -6,8 +6,9 @@ login_dialog::login_dialog(QWidget *parent) :
     ui(new Ui::login_dialog)
 {
     ui->setupUi(this);
-    ui->usrname_lineEdit->setText("1");
-    ui->password_lineEdit->setText("1");
+    ui->usrname_lineEdit->setText("hover");
+    ui->password_lineEdit->setText("123456");
+    ui->password_lineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
     ui->login_pushButton->setFocus();
 }
 
@@ -36,7 +37,10 @@ void login_dialog::on_login_pushButton_clicked()
         return;
     }
     MainWindow* w=new MainWindow;
+    // set user information
     w->UID=query.value(0).toInt();
+    w->userName=query.value(1).toString();
+
     w->db=this->db;
     this->close();
     w->show();

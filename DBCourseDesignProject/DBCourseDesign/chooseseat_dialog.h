@@ -27,7 +27,8 @@ class chooseSeat_Dialog : public QDialog
 public:
     int FID;
     void queryFSTATUS(int FID);
-    explicit chooseSeat_Dialog(QWidget *parent = 0,int FID=-1);
+    class MainWindow* mw;
+    explicit chooseSeat_Dialog(class MainWindow *parent = 0,int FID=-1);
     ~chooseSeat_Dialog();
     QString seatName;
 
@@ -36,7 +37,7 @@ private:
     QMap<QString, QPushButton*> pushButtonMap;
     Ui::chooseSeat_Dialog *ui;
     void setButtonGroup(int FID);
-    void setImage(int FID);
+    void setImage();
     void initButton();
     void buttonJudge(int buttonId);
     class MySqlQueryModel* StatusModel=NULL;

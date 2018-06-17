@@ -25,7 +25,7 @@ public:
     QVector<QString> opTitle;   //table title
     QVector<QString> addVec;    //the vec
     class MainWindow* mw;
-    QTableView* pOpView;
+    //QTableView* pOpView;
 
     // public function
     MySqlQueryModel();
