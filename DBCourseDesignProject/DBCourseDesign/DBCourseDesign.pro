@@ -5,7 +5,10 @@
 #-------------------------------------------------
 
 QT       += core gui
-QT+=sql
+QT       +=sql
+QT       += webengine
+QT+= webenginewidgets
+QT      +=charts
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = DBCourseDesign
@@ -26,9 +29,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    login_dialog.cpp \
-    mysqlquerymodel.cpp \
-    chooseseat_dialog.cpp \
+        login_dialog.cpp \
+        mysqlquerymodel.cpp \
+        chooseseat_dialog.cpp \
+    addflight_dialog.cpp \
+    print_dialog.cpp \
+    report_dialog.cpp
 
 
 HEADERS += \
@@ -36,12 +42,21 @@ HEADERS += \
     login_dialog.h \
     mysqlquerymodel.h \
     chooseseat_dialog.h \
+    addflight_dialog.h \
+    print_dialog.h \
+    report_dialog.h
 
 
 FORMS += \
         mainwindow.ui \
     login_dialog.ui \
-    chooseseat_dialog.ui
+    chooseseat_dialog.ui \
+    addflight_dialog.ui \
+    print_dialog.ui \
+    report_dialog.ui
 
-DISTFILES += \
-    FSTATUSimage/B747-89L.jpg
+DISTFILES +=
+
+
+RESOURCES += \
+    rousefile.qrc

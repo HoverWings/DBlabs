@@ -1,8 +1,20 @@
+/* FileName:mysqlquerymodel.h
+ * Author:Hover
+ * E-Mail:hover@hust.edu.cn
+ * GitHub:HoverWings
+ * Description:This class inherits from the basical QSqlQueryModel to make the module can edit and autofit the UI
+ * Main Funciton:
+ * 1.   Judge the role to control the edit Authority
+ * 2.   Auto fit the process table and get the tabel title from the DB
+ * 3.   Implement the title to the DB dictionary mapping, which is choosable
+ * 4.   Set the table properity automaticly
+ */
 #ifndef MYSQLQUERYMODEL_H
 #define MYSQLQUERYMODEL_H
 #include "mainwindow.h"
 #include <QSqlQueryModel>
-#include <qvector.h>
+#include <QVector>
+#include <QMap>
 /*
  * op tabel
  * 1:user
@@ -25,7 +37,7 @@ public:
     QVector<QString> opTitle;   //table title
     QVector<QString> addVec;    //the vec
     class MainWindow* mw;
-    //QTableView* pOpView;
+    QMap<QString,QString> map;
 
     // public function
     MySqlQueryModel();
@@ -49,12 +61,6 @@ private:
     int opCol;
 
     //private funciton
-
-
-
-
-
-
 
 };
 

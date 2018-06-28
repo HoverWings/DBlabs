@@ -1,3 +1,9 @@
+/* FileName:chooseseat_dialog.h
+ * Author:Hover
+ * E-Mail:hover@hust.edu.cn
+ * GitHub:HoverWings
+ * Description:The definition of chooseseat module
+ */
 #ifndef CHOOSESEAT_DIALOG_H
 #define CHOOSESEAT_DIALOG_H
 
@@ -14,6 +20,7 @@
 #include "mysqlquerymodel.h"
 #include <QButtonGroup>
 #include <QMessageBox>
+#include <QGraphicsView>
 
 namespace Ui
 {

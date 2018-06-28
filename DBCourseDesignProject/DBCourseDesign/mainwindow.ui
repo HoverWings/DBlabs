@@ -17,7 +17,7 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>0</x>
       <y>0</y>
       <width>1401</width>
       <height>601</height>
@@ -30,21 +30,11 @@
      <attribute name="title">
       <string>航班</string>
      </attribute>
-     <widget class="QTableWidget" name="tableWidget">
+     <widget class="QPushButton" name="addFlightButton">
       <property name="geometry">
        <rect>
-        <x>90</x>
-        <y>90</y>
-        <width>211</width>
-        <height>251</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="addButton">
-      <property name="geometry">
-       <rect>
-        <x>380</x>
-        <y>390</y>
+        <x>70</x>
+        <y>450</y>
         <width>88</width>
         <height>27</height>
        </rect>
@@ -53,11 +43,11 @@
        <string>add</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="deleteButton">
+     <widget class="QPushButton" name="deleteFlightButton">
       <property name="geometry">
        <rect>
-        <x>520</x>
-        <y>390</y>
+        <x>190</x>
+        <y>450</y>
         <width>88</width>
         <height>27</height>
        </rect>
@@ -69,11 +59,24 @@
      <widget class="QTableView" name="tableView_0">
       <property name="geometry">
        <rect>
-        <x>420</x>
-        <y>50</y>
-        <width>581</width>
-        <height>301</height>
+        <x>40</x>
+        <y>30</y>
+        <width>1051</width>
+        <height>321</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>450</y>
+        <width>151</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>show Report</string>
       </property>
      </widget>
     </widget>
@@ -117,34 +120,20 @@
        <item row="3" column="1">
         <widget class="QTimeEdit" name="timeEdit"/>
        </item>
-       <item row="5" column="1">
-        <widget class="QComboBox" name="queryorder_comboBox">
-         <item>
-          <property name="text">
-           <string>价格</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>最近</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>直达</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>搭乘过的航空公司</string>
-          </property>
-         </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="FFROM_lineEdit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>起飞日期</string>
+         </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="FTO_lineEdit">
          <property name="text">
-          <string> 出发地</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -162,37 +151,10 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_6">
+       <item row="6" column="0" colspan="2">
+        <widget class="QPushButton" name="queryButton">
          <property name="text">
-          <string>Order By</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="FTO_lineEdit">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>起飞日期</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="FFROM_lineEdit"/>
-       </item>
-       <item row="2" column="1">
-        <widget class="QDateEdit" name="dateEdit"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>到达地</string>
+          <string>查询</string>
          </property>
         </widget>
        </item>
@@ -203,12 +165,78 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0" colspan="2">
-        <widget class="QPushButton" name="queryButton">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>查询</string>
+          <string>到达地</string>
          </property>
         </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>出发地</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Order By</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="order_comboBox">
+         <item>
+          <property name="text">
+           <string>最近</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>价格</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QDateEdit" name="dateEdit"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_2">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>450</y>
+        <width>93</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>是否中转</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>480</y>
+        <width>201</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string> 中转时间</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="transtime_lineEdit"/>
        </item>
       </layout>
      </widget>
@@ -261,9 +289,9 @@
      <widget class="QTableView" name="tableView_3">
       <property name="geometry">
        <rect>
-        <x>80</x>
+        <x>10</x>
         <y>60</y>
-        <width>401</width>
+        <width>771</width>
         <height>371</height>
        </rect>
       </property>
@@ -271,7 +299,7 @@
      <widget class="QLabel" name="label_7">
       <property name="geometry">
        <rect>
-        <x>80</x>
+        <x>20</x>
         <y>30</y>
         <width>241</width>
         <height>19</height>
@@ -279,6 +307,49 @@
       </property>
       <property name="text">
        <string>The Recent Flight</string>
+      </property>
+     </widget>
+     <widget class="QWebEngineView" name="webEngineView">
+      <property name="geometry">
+       <rect>
+        <x>810</x>
+        <y>160</y>
+        <width>300</width>
+        <height>200</height>
+       </rect>
+      </property>
+      <property name="url">
+       <url>
+        <string>about:blank</string>
+       </url>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>报表</string>
+     </attribute>
+     <widget class="QComboBox" name="FLIGHT_comboBox_4">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>450</y>
+        <width>219</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="editable">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QGraphicsView" name="graphicsView">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>50</y>
+        <width>731</width>
+        <height>321</height>
+       </rect>
       </property>
      </widget>
     </widget>
@@ -354,6 +425,32 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QWebEngineView</class>
+   <extends>QWidget</extends>
+   <header location="global">QtWebEngineWidgets/QWebEngineView</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>FFROM_lineEdit</tabstop>
+  <tabstop>FTO_lineEdit</tabstop>
+  <tabstop>dateEdit</tabstop>
+  <tabstop>timeEdit</tabstop>
+  <tabstop>FLIGHT_comboBox</tabstop>
+  <tabstop>order_comboBox</tabstop>
+  <tabstop>queryButton</tabstop>
+  <tabstop>postButton</tabstop>
+  <tabstop>tableView_0</tabstop>
+  <tabstop>addFlightButton</tabstop>
+  <tabstop>deleteFlightButton</tabstop>
+  <tabstop>tableView_2</tabstop>
+  <tabstop>tableView_1</tabstop>
+  <tabstop>checkin_pushButton</tabstop>
+  <tabstop>Unsubscribe_pushButton</tabstop>
+  <tabstop>tableView_3</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

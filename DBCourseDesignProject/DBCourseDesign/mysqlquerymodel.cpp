@@ -1,3 +1,9 @@
+/* FileName:mysqlquerymodel.cpp
+ * Author:Hover
+ * E-Mail:hover@hust.edu.cn
+ * GitHub:HoverWings
+ * Description:This class inherits from the basical QSqlQueryModel to make the module can edit and autofit the UI
+ */
 #include "mysqlquerymodel.h"
 #include <QSqlQuery>
 #include <QColor>
@@ -5,6 +11,8 @@
 MySqlQueryModel::MySqlQueryModel(QObject *parent) :
     QSqlQueryModel(parent)
 {
+    // set map
+//    map["FLIGHT"]
 
 }
 
@@ -92,13 +100,12 @@ bool MySqlQueryModel::set_opTitle()
     while (query.next())
     {
         opTitle.append(query.value(0).toString());
+        // Title mapping
     }
-    //qDebug() <<opTitle;
     QSqlQuery priquery;
     priquery.prepare("SHOW COLUMNS FROM FLIGHTinfo where `Key`='PRI'");
     isOk = priquery.exec();
     priquery.next();
-    //qDebug() <<priquery.value(0);
     opPRI=priquery.value(0).toString();
     for (int i = 0; i < opTitle.size(); ++i)
     {
@@ -136,7 +143,7 @@ QVariant MySqlQueryModel::data(const QModelIndex &index, int role) const
     QVariant value = QSqlQueryModel::data(index, role);
     //第一个字段的字体颜色为红色
     if (role == Qt::TextColorRole && index.column() == 0)
-        return qVariantFromValue(QColor(Qt::red));
+        return qVariantFromValue(QColor(Qt::green));
     return value;
 }
 
@@ -166,7 +173,6 @@ bool MySqlQueryModel::set_opName()
         case (0):opName="FLIGHTinfo";break;
         case (1):opName="ORDERinfo";break;
         case (2):opName="FSTATUSinfo";break;
-        //case (3):opName=""
     }
     return true;
 }

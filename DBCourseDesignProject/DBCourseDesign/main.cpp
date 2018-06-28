@@ -1,3 +1,9 @@
+/* FileName:main.cpp
+ * Author:Hover
+ * E-Mail:hover@hust.edu.cn
+ * GitHub:HoverWings
+ * Description: The main loop of the total Program and link the DB
+ */
 #include "mainwindow.h"
 #include "login_dialog.h"
 #include <QApplication>
@@ -22,33 +28,20 @@ int main(int argc, char *argv[])
     {
           QMessageBox::warning(NULL,"警告","无法连接数据库");
     }
-    // 此处调试
-//    QString currentPath;
-//    QDir dir;
-//    currentPath=dir.currentPath();
-//    qDebug()<<"path"<<currentPath;
-//    QPixmap image("./FMODELimage/B747-89L.jpg");
-//    QByteArray bytes;
-//    QBuffer buffer(&bytes);
-//    buffer.open(QIODevice::WriteOnly);
-//    image.save(&buffer, "PNG");
-//    QVariant imageData(bytes);
+    a.setWindowIcon(QIcon(":/main.ico"));
 
-//    QSqlQuery query;
-//    query.prepare("insert into FMODELinfo(FMODEL,Fimage),values(:FMODEL,:Fimage)");
-//    query.bindValue(":FMODEL", "B747-89L");
-//    query.bindValue(":Fimage", imageData);
-//    bool isOK=query.exec();
+    QString currentPath;
+    QDir dir;
+    currentPath=dir.currentPath();
+    qDebug()<<"path"<<currentPath;
 
-
-//    QSqlQuery query;
-//    query.prepare("DELETE FROM FLIGHTinfo WHERE FID =1");
-//    bool isOk = query.exec();
-//    qDebug() <<"delete"<<isOk;
-
-//    QString str="asd";
-
-//    int a=str.toInt();
+    QSqlQuery query;
+    query.prepare("select * from `FLIGHTinfo` as f where exists(select * from `FSTATUSinfo` as s where s.`FID`=f.`FID` and s.`USABLE`='1') and f.`FID`=3;");
+    bool isOK=query.exec();
+    while(query.next())
+    {
+        qDebug()<<query.value(0).toString();
+    }
     login_dialog l;
     l.db=&db;
     l.show();

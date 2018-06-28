@@ -1,3 +1,9 @@
+/* FileName:mainwindow.h
+ * Author:Hover
+ * E-Mail:hover@hust.edu.cn
+ * GitHub:HoverWings
+ * Description:The definition of mainwindow slot,function and the interface with other module
+ */
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -10,10 +16,18 @@
 #include <QDebug>
 #include <QDate>
 #include <QTime>
+#include <QUrl>
 #include <QComboBox>
+#include <QWebChannel>
+#include <QPrinter>
+#include <QPalette>
 #include <QTableWidget>
 #include "mysqlquerymodel.h"
 #include "chooseseat_dialog.h"
+#include "addflight_dialog.h"
+#include "print_dialog.h"
+#include "report_dialog.h"
+
 namespace Ui
 {
     class MainWindow;
@@ -26,11 +40,11 @@ class MainWindow : public QMainWindow
 public:
     int UID;
     QString userName;
-
+    bool isRoot=false;
     QString seatName;
 
     QSqlDatabase* db;
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0,bool isRoot = false);
     class MySqlQueryModel* myModel=NULL;
     QTableView * pOpView=NULL;
     ~MainWindow();
@@ -45,6 +59,7 @@ private:
     void setFlight_Combox();
     void setTab();
     void setTab2();
+    void transQuery();
 
 
     //debug funciton
@@ -58,8 +73,8 @@ public slots:
 private slots:
 
 
-    void on_deleteButton_clicked();
-    void on_addButton_clicked();
+    //void on_deleteButton_clicked();
+    //void on_addButton_clicked();
     void on_queryButton_clicked();
     void on_tabWidget_currentChanged(int index);
     void on_postButton_clicked();
@@ -70,28 +85,10 @@ private slots:
     void timeChanged();
 
 
+    void on_addFlightButton_clicked();
+    void on_deleteFlightButton_clicked();
+    void on_checkin_pushButton_clicked();
+    void on_pushButton_clicked();
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif // MAINWINDOW_H

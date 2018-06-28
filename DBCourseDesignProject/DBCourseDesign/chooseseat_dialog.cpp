@@ -1,3 +1,9 @@
+/* FileName:chooseseat_dialog.cpp
+ * Author:Hover
+ * E-Mail:hover@hust.edu.cn
+ * GitHub:HoverWings
+ * Description:The implementation of chooseseat module
+ */
 #include "chooseseat_dialog.h"
 #include "ui_chooseseat_dialog.h"
 
@@ -23,12 +29,19 @@ chooseSeat_Dialog::chooseSeat_Dialog(class MainWindow *parent,int FID) :
     queryFSTATUS(FID);
     mw=parent;
 
+//    //set qss
+//    QFile qssfile(":/test.qss");
+//    qssfile.open(QFile::ReadOnly);
+//    QString qss;
+//    qss = qssfile.readAll();
+//    this->setStyleSheet(qss);
+
     //setAttribute(Qt::WA_DeleteOnClose);
+    // set focus
+
 }
 
-
-
-
+//RESIZE!
 void chooseSeat_Dialog::setImage()
 {
     QString str = "select * from FMODELinfo where FMODEL= (select FMODEL FROM FLIGHTinfo where FID= "+QString::number(FID,10)+" )";
@@ -39,13 +52,17 @@ void chooseSeat_Dialog::setImage()
     {
         QLabel *PicLabel = new QLabel();
         photo.loadFromData(query.value(1).toByteArray(), "JPG"); //从数据库中读出图片为二进制数据，图片格式为JPG，然后显示到QLabel里
+        //photo.scaledToHeight(ui->graphicsView->maximumHeight());
+        //photo.scaledToWidth(ui->graphicsView->maximumWidth());
+        photo.scaled(ui->graphicsView->maximumSize());
         PicLabel->setPixmap(photo);
         PicLabel->setScaledContents(true);
     }
+
     QGraphicsScene *scene = new QGraphicsScene;
     scene->addPixmap(photo);
     ui->graphicsView->setScene(scene);
-    ui->graphicsView->resize(photo.width() + 10, photo.height() + 10);
+    ui->graphicsView->resize(photo.width()*0.5 + 10, photo.height()*0.5 + 10);
     ui->graphicsView->show();
 }
 
@@ -146,26 +163,6 @@ void chooseSeat_Dialog::queryFSTATUS(int FID)
     }
     ui->FSTATUS_tableView->setModel(StatusModel);
     ui->FSTATUS_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-//    qDebug()<<"columnCount"<<StatusModel->columnCount();
-//    qDebug()<<"rowCount"<<StatusModel->rowCount();
-//    for(int i=0;i<myModel->opTitle.size();i++)
-//    {
-//        QModelIndex index= model->index(row,i);//选中行第一列的内容
-//        QVariant data = model->data(index);
-//        qDebug()<<data.toString();
-//        chsVecs.append(data.toString());
-//    }
-//    if(isOk)
-//    {
-//        //QMessageBox::about(NULL, "Attention", "退订成功");
-//        qDebug()<<"查询座位成功";
-//    }
-//    else
-//    {
-//        QMessageBox::about(NULL, "Attention", "查询座位失败!");
-//        qDebug()<<"查询座位失败";
-//        return;
-//    }
 }
 
 void chooseSeat_Dialog::on_chooseSteat_pushButton_clicked()

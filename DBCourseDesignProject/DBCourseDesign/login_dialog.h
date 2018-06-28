@@ -1,13 +1,20 @@
+/* FileName:login_dialog.h
+ * Author:Hover
+ * E-Mail:hover@hust.edu.cn
+ * GitHub:HoverWings
+ * Description:The definition of login module
+ */
 #ifndef LOGIN_DIALOG_H
 #define LOGIN_DIALOG_H
 
-#include<QDialog>
-#include<QDebug>
-#include<QString>
-#include<QSqlQuery>
-#include<QMessageBox>
-#include"mainwindow.h"
-#include"string"
+#include <QDialog>
+#include <QDebug>
+#include <QString>
+#include <QSqlQuery>
+#include <QVector>
+#include <QMessageBox>
+#include "mainwindow.h"
+#include "string"
 
 namespace Ui
 {
